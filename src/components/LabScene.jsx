@@ -25,9 +25,10 @@ const LabScene = () => {
         );
     };
 
-    function Beaker({ model, position, scale, onSelect }) {
+    function Beaker({ model, position, scale, onSelect, color }) {
         const { scene } = model;
-
+        const cylinderHeight = 2; // Keep the cylinder's height as a variable for easy modification
+        const cylinderOffset = cylinderHeight / 2; // Calculate the offset
         return (
             <mesh
                 position={position}
@@ -36,10 +37,16 @@ const LabScene = () => {
                 onPointerOver={(e) => e.stopPropagation()}
                 onPointerOut={(e) => e.stopPropagation()}
             >
-                <primitive object={scene} />
+                <primitive object={scene} >
+                    <mesh position={[0, cylinderOffset, 0]} > {/* Adjusted position to be inside the beaker */}
+                        <cylinderGeometry args={[2, 2, cylinderHeight, 32]} /> {/* Adjusted cylinder dimensions */}
+                        <meshBasicMaterial color={color} />
+                    </mesh>
+                </primitive>
             </mesh>
         );
     }
+    
 
     return (
         <Canvas style={{ position: "fixed", width: "100vw", height: "100vh" }}>
@@ -48,12 +55,13 @@ const LabScene = () => {
                 <Environment preset="warehouse" />
                 <Physics>
                     <primitive object={lab.scene} position={[-0.2, 1.2, -0.6]} scale={0.1} />
-                    <Beaker model={beaker1} position={beaker1Position} scale={[0.015, 0.015, 0.015]}  onSelect={handleSelectBeaker1}  />
-                    <Beaker 
-                        model={beaker2} 
-                        position={beaker2Position} 
-                        scale={[0.015, 0.015, 0.015]} 
-                        onSelect={handleSelectBeaker2} 
+                    <Beaker color="red" model={beaker1} position={beaker1Position} scale={[0.015, 0.015, 0.015]} onSelect={handleSelectBeaker1} />
+                    <Beaker
+                    color="blue"
+                        model={beaker2}
+                        position={beaker2Position}
+                        scale={[0.015, 0.015, 0.015]}
+                        onSelect={handleSelectBeaker2}
                     />
                 </Physics>
             </XR>
